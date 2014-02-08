@@ -5,6 +5,7 @@ public class TwoWheeledRobot {
 	public static final double DEFAULT_RIGHT_RADIUS = 2.75;
 	public static final double DEFAULT_WIDTH = 15.8;
 	private NXTRegulatedMotor leftMotor, rightMotor;
+	private NXTRegulatedMotor[] motors = new NXTRegulatedMotor[2];
 	private double leftRadius, rightRadius, width;
 	private double forwardSpeed, rotationSpeed;
 	
@@ -15,6 +16,8 @@ public class TwoWheeledRobot {
 						   double rightRadius) {
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
+		motors[0] = this.leftMotor;
+		motors[1] = this.rightMotor;
 		this.leftRadius = leftRadius;
 		this.rightRadius = rightRadius;
 		this.width = width;
@@ -96,5 +99,8 @@ public class TwoWheeledRobot {
 			rightMotor.setSpeed(900);
 		else
 			rightMotor.setSpeed((int)rightSpeed);
+	}
+	public NXTRegulatedMotor[] getMotors(){
+		return motors;
 	}
 }

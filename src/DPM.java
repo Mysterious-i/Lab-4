@@ -1,4 +1,4 @@
-import lejos.nxt.Motor;
+/*import lejos.nxt.Motor;
 
 // Main Class
 public class DPM {
@@ -13,3 +13,4 @@ public class DPM {
 		nav.travelTo(0, 0);
 	}
 }
+*/
