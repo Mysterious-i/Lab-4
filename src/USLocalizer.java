@@ -3,7 +3,7 @@ import lejos.nxt.UltrasonicSensor;
 public class USLocalizer {
 	public enum LocalizationType { FALLING_EDGE, RISING_EDGE };
 	public static double ROTATION_SPEED = 30;
-
+	private final int WALL_DIST_MAX = 71;
 	private Odometer odo;
 	private TwoWheeledRobot robot;
 	private UltrasonicSensor us;
@@ -22,9 +22,34 @@ public class USLocalizer {
 	public void doLocalization() {
 		double [] pos = new double [3];
 		double angleA, angleB;
-		
+		int numberOfReadings = 0;
 		if (locType == LocalizationType.FALLING_EDGE) {
 			// rotate the robot until it sees no wall
+			boolean seeWall = true;
+			
+			//Turn the robot until you dont see the wall anymore
+			while(seeWall){
+				if(getFilteredData() > WALL_DIST_MAX && numberOfReadings > 10){
+					seeWall = false;
+				}
+				else{
+					numberOfReadings++;
+				}
+			}
+			numberOfReadings = 0;
+			
+			//Turn the robot until it detexts a falling edge
+			while(!seeWall){
+				if(getFilteredData() < WALL_DIST_MAX && numberOfReadings > 10){
+					seeWall = true;
+				}
+				else{
+					numberOfReadings++;
+				}
+			}
+			numberOfReadings = 0;
+			
+			
 			
 			// keep rotating until the robot sees a wall, then latch the angle
 			
