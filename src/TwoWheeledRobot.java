@@ -103,4 +103,26 @@ public class TwoWheeledRobot {
 	public NXTRegulatedMotor[] getMotors(){
 		return motors;
 	}
+	
+	//stop the robot
+	public void stop(){
+		
+		leftMotor.setSpeed(0);
+		rightMotor.setSpeed(0);
+	}
+	
+	//advance
+	public void goForward(double speed){
+		
+		this.forwardSpeed = speed; 
+		setSpeeds(forwardSpeed, 0);
+		
+	}
+	
+	public void rotate(double speed){
+		
+		rotationSpeed = speed;
+		setSpeeds(0,rotationSpeed);
+		
+	}
 }
