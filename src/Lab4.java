@@ -10,10 +10,10 @@ public class Lab4 {
 		// setup the odometer, display, and ultrasonic and light sensors
 		TwoWheeledRobot patBot = new TwoWheeledRobot(Motor.A, Motor.B);
 		Odometer odo = new Odometer(patBot, true);
-		LCDInfo lcd = new LCDInfo(odo);
-		Timer LCDTimer = new Timer(100, lcd);
+		
+		//Timer LCDTimer = new Timer(100, lcd);
 		UltrasonicSensor us = new UltrasonicSensor(SensorPort.S2);
-		LightSensor ls = new LightSensor(SensorPort.S1);
+		ColorSensor ls = new ColorSensor(SensorPort.S1);
 		
 		
 		do {
@@ -22,7 +22,7 @@ public class Lab4 {
 
 			// ask the user whether the motors should drive in a square or float
 			LCD.drawString("< Left  |  Right >", 0, 0);
-			LCD.drawString("        |        ", 0, 1);
+			LCD.drawString("        |         ", 0, 1);
 			LCD.drawString(" Falling|  Rising ", 0, 2);
 			LCD.drawString(" Edge   |  Edge   ", 0, 3);
  
@@ -33,24 +33,29 @@ public class Lab4 {
 
 		if (buttonChoice == Button.ID_LEFT) 
 		{	//falling edge US localization
-			LCDTimer.start();
+			//LCDTimer.start();
+			
+			LCD.clear();
+			LCDInfo lcd = new LCDInfo(odo);
 			USLocalizer usl = new USLocalizer (odo, us, USLocalizer.LocalizationType.FALLING_EDGE);
 			usl.doLocalization();
+	    	LightLocalizer lsl = new LightLocalizer(odo, ls);
+			lsl.doLocalization();
 			
 		} else {
 			//Rising edge US localization
-			LCDTimer.start();
+			//LCDTimer.start();
 			USLocalizer usl = new USLocalizer (odo, us, USLocalizer.LocalizationType.RISING_EDGE);
 			usl.doLocalization();
+	    	LightLocalizer lsl = new LightLocalizer(odo, ls);
+			lsl.doLocalization();
 
 		}
 		
 		
-		
-		
 		// perform the light sensor localization
-		LightLocalizer lsl = new LightLocalizer(odo, ls);
-		lsl.doLocalization();			
+    	//LightLocalizer lsl = new LightLocalizer(odo, ls);
+		//lsl.doLocalization();			
 		
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
