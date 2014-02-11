@@ -44,7 +44,7 @@ public class Lab4 {
 			
 		} else {
 			//Rising edge US localization
-			//LCDTimer.start();
+
 			USLocalizer usl = new USLocalizer (odo, us, USLocalizer.LocalizationType.RISING_EDGE);
 			usl.doLocalization();
 	    	LightLocalizer lsl = new LightLocalizer(odo, ls);
@@ -52,15 +52,9 @@ public class Lab4 {
 
 		}
 		
-		
-		// perform the light sensor localization
-    	//LightLocalizer lsl = new LightLocalizer(odo, ls);
-		//lsl.doLocalization();			
-		
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
 		
-		//Button.waitForPress();
 	}
 
 }

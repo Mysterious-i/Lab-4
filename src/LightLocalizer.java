@@ -9,45 +9,47 @@ public class LightLocalizer{
     private Odometer odo;
     private final int d = 12;
     private TwoWheeledRobot robot;
-    private Navigation nav;
-    private ColorSensor ls;
-    private int counter, lightValue;
-    private double x, y, x1, x2, y1, y2, dThetaY, dThetaX;
-    private boolean line;
-    private boolean midPoint;  
+    private Navigation nagivator;
+    private ColorSensor lightSens;
+    private int numberOfLinesRead, valueOfLight;
+    private double x, y, x1, x2, y1, y2;
+    private boolean senseLine;
+    private int NUMBER_OF_LINES_NEEDED = 4;
+ 
     public LightLocalizer(Odometer odo, ColorSensor ls) {
         this.odo = odo;
         this.robot = odo.getTwoWheeledRobot();
-        this.ls = ls;
-        this.nav = odo.getNavigation();
-        lightValue = 0;
-        counter = 0;
-        line = false;
-        midPoint = false;
+        this.lightSens = ls;
+        this.nagivator = odo.getNavigation();
+        valueOfLight = 0;
+        numberOfLinesRead = 0;
+        senseLine = false;
+
         // turn on the light
         ls.setFloodlight(true);
     }
       
     public void doLocalization() {
-        boolean done = false;
-        double angle;
-       /* while(!midPoint)
-        {
-        	lightValue = ls.getLightValue();
-        	if(lightValue <= 50)
-        		midPoint = true;
-        	nav.goForward(1.0);
-        }*/
+    	
+    	//Start the robot rotating
         robot.setSpeeds(0, -50);
   
-        // keep turning the robot until all 4 lines are picked up by the sensor
-       while (counter < 4) {
-            lightValue = ls.getLightValue();
-            LCD.drawInt(lightValue, 3, 7);
-            if (!line && lightValue <= 50) {
-                counter++;
-                line = true;
-                switch (counter) {
+        
+        /* Rotate the robot until it reads 4 lines
+         * Make sure the robot does not read a line twice by setting a boolean
+         * to true of the robot does read a line.
+         */
+      
+        while (numberOfLinesRead < NUMBER_OF_LINES_NEEDED) {
+        	
+        	valueOfLight = lightSens.getLightValue();
+            
+        	LCD.drawInt(valueOfLight, 3, 7);
+           
+        	if (!senseLine && valueOfLight <= 50) {
+            	numberOfLinesRead++;
+                senseLine = true;
+                switch (numberOfLinesRead) {
                 case 1:
                     y1 = odo.getAng();
                     Sound.beep();
@@ -67,44 +69,26 @@ public class LightLocalizer{
                 default:            
                 }   
             }
-            else if (lightValue > 50) line = false;
+            else if (valueOfLight > 50) senseLine = false;
         }
-        
-        
-        
+
         // stop the robot
         robot.setSpeeds(0,0);
           
-        // calculate the difference in the heading for x and y axes
-        dThetaY = y1 - y2;
-        dThetaX = x1 - x2;
-          
-        // compute the current x and y position
-        x = -d * Math.cos(Math.toRadians(dThetaY) / 2);
-        y = -d * Math.cos(Math.toRadians(dThetaX) / 2);
-          
-        // rotate to 0 degrees
-        nav.turnTo(0, true);
-          
-        // update the robot's position
+        //  Use the angles and equation to calculate the current x and y
+        x = -d * Math.cos(Math.toRadians(y1 - y2) / 2);
+        y = -d * Math.cos(Math.toRadians(x1 - x2) / 2);
+               
+        // Update the robot's position
         odo.setPosition(new double[] {x, y, 0}, new boolean[] {true, true, true});
           
-        // go to the point (0, 0)
-        nav.travelTo(3,0);
+        // Make the robot go to the origin (intersection of the two lines)
+        nagivator.travelTo(0, 0);
           
-        // turn back to a heading of 0
-        nav.turnTo(18, true);
+        // Make the robot face straight
+        nagivator.turnTo(0, true);
           
-        // update the odometer with the position and heading of the robot
+        // Update the odometer so it says its at the origin 
         odo.setPosition(new double[] {0, 0, 0}, new boolean[] {true, true, true});
-    }
-  
-    private int convertDistance(double radius, double distance) {
-        return (int) ((180.0 * distance) / (Math.PI * radius));
-    }
-  
-      
-    private int convertAngle(double radius, double width, double angle) {
-        return convertDistance(radius, Math.PI * width * angle / 360.0);
     }
 } 

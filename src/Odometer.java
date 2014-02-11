@@ -52,22 +52,10 @@ public class Odometer implements TimerListener {
     public Odometer(TwoWheeledRobot robot, int period) {
         this(robot, period, false);
     }
-      
-    /*
-     * Calculates displacement and heading as title suggests
-     */
-    private void getDisplacementAndHeading(double[] data) {
-        int leftTacho, rightTacho;
-        leftTacho = leftMotor.getTachoCount();
-        rightTacho = rightMotor.getTachoCount();
-  
-        data[0] = (leftTacho * leftRadius + rightTacho * rightRadius) * Math.PI / 360.0;
-        data[1] = (rightTacho * rightRadius - leftTacho * leftRadius) / width;
-    }
   
       
     public void timedOut() {    
-         this.getDisplacementAndHeading(dDH);
+         this.getVector(dDH);
         dDH[0] -= oldDH[0];
         dDH[1] -= oldDH[1];
   
@@ -83,8 +71,18 @@ public class Odometer implements TimerListener {
         oldDH[0] += dDH[0];
         oldDH[1] += dDH[1]; 
     }
-      
-    // accessors
+    
+    //Calculates the displacement and direction
+    private void getVector(double[] data) {
+        int leftTacho, rightTacho;
+        leftTacho = leftMotor.getTachoCount();
+        rightTacho = rightMotor.getTachoCount();
+  
+        data[0] = (leftTacho * leftRadius + rightTacho * rightRadius) * Math.PI / 360.0;
+        data[1] = (rightTacho * rightRadius - leftTacho * leftRadius) / width;
+    }
+    
+    // Getters of x y and the angle
     public double getX() {
         synchronized (lock) {
             return x;
@@ -102,7 +100,12 @@ public class Odometer implements TimerListener {
             return theta;
         }
     }
-      
+    //Setting the angle
+    public void setAng(double angle) {
+        synchronized (lock) {
+            theta = angle;
+        }
+    } 
     public void getPosition(double [] pos) {
         synchronized (lock) {
             pos[0] = x;
@@ -156,10 +159,5 @@ public class Odometer implements TimerListener {
         else
             return d - 360.0;
     }
-      
-    public void setAng(double angle) {
-        synchronized (lock) {
-            theta = angle;
-        }
-    }
+
 } 
