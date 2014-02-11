@@ -1,6 +1,9 @@
 import lejos.nxt.*;
 import lejos.util.Timer;
 
+//Alessandro Parisi 260529758
+//Shahrzad Tighnavardmollasarae 260413622
+
 public class Lab4 {
 
 	public static void main(String[] args) {

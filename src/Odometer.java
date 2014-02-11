@@ -1,7 +1,8 @@
 import lejos.nxt.*;
 import lejos.util.Timer;
 import lejos.util.TimerListener;
-  
+//Alessandro Parisi 260529758
+//Shahrzad Tighnavardmollasarae 260413622
 public class Odometer implements TimerListener {
     public static final int DEFAULT_PERIOD = 25;
     private NXTRegulatedMotor leftMotor, rightMotor;

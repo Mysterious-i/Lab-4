@@ -1,6 +1,7 @@
 import lejos.nxt.Sound;
 import lejos.nxt.UltrasonicSensor;
-
+//Alessandro Parisi 260529758
+//Shahrzad Tighnavardmollasarae 260413622
 public class USLocalizer {
 	public enum LocalizationType { FALLING_EDGE, RISING_EDGE };
 	public static double ROTATION_SPEED = 30;

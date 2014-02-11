@@ -4,7 +4,8 @@ import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;
 import lejos.nxt.Sound;
 import lejos.nxt.NXTRegulatedMotor;
-  
+//Alessandro Parisi 260529758
+//Shahrzad Tighnavardmollasarae 260413622
 public class LightLocalizer{
     private Odometer odo;
     private final int d = 12;

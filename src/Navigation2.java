@@ -7,7 +7,8 @@
  * Movement control class (turnTo, travelTo, flt, localize)
  */
 import lejos.nxt.NXTRegulatedMotor;
-
+//Alessandro Parisi 260529758
+//Shahrzad Tighnavardmollasarae 260413622
 public class Navigation2 {
 	final static int FAST = 200, SLOW = 100, ACCELERATION = 4000;
 	final static double DEG_ERR = 3.0, CM_ERR = 1.0;

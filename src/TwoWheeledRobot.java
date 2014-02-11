@@ -1,5 +1,6 @@
 import lejos.nxt.NXTRegulatedMotor;
-  
+//Alessandro Parisi 260529758
+//Shahrzad Tighnavardmollasarae 260413622  
 public class TwoWheeledRobot {
     public static final double DEFAULT_LEFT_RADIUS = 2.75;
     public static final double DEFAULT_RIGHT_RADIUS = 2.75;
