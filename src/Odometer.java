@@ -8,8 +8,7 @@ public class Odometer implements TimerListener {
     private NXTRegulatedMotor leftMotor, rightMotor;
     private TwoWheeledRobot robot;
     private Timer odometerTimer;
-    private Navigation nav;
-    // position data
+    private Navigation navigation;
     private Object lock;
     private double x, y, theta;
     private double [] oldDH, dDH;
@@ -17,9 +16,9 @@ public class Odometer implements TimerListener {
     private double leftRadius, rightRadius, width;
       
     public Odometer(TwoWheeledRobot robot, int period, boolean start) {
-        // initialise variables
+        
         this.robot = robot;
-        this.nav = new Navigation(this);
+        this.navigation = new Navigation(this);
         odometerTimer = new Timer(period, this);
         leftMotor = Motor.A;
         rightMotor = Motor.B;
@@ -33,7 +32,6 @@ public class Odometer implements TimerListener {
         this.leftRadius = 2.1;
         this.width = 15.45;
           
-        // start the odometer immediately, if necessary
         if (start)
             odometerTimer.start();
     }
@@ -128,7 +126,7 @@ public class Odometer implements TimerListener {
     }
       
     public Navigation getNavigation() {
-        return this.nav;
+        return this.navigation;
     }
       
     // mutators
