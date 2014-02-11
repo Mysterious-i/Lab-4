@@ -16,10 +16,6 @@ public class Odometer implements TimerListener {
       
     private double leftRadius, rightRadius, width;
       
-//  private double lastTachoLeft, lastTachoRight, deltaTachoLeft, deltaTachoRight, distanceRight, distanceLeft, distance;
-//  private final double distToDeg = 20.46, wheelBase = 15.2;
-//  private double deltaX, deltaY, deltaTheta, displacement;
-      
     public Odometer(TwoWheeledRobot robot, int period, boolean start) {
         // initialise variables
         this.robot = robot;
