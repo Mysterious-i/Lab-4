@@ -41,7 +41,7 @@ public class LightLocalizer{
         robot.setSpeeds(0, -50);
   
         // keep turning the robot until all 4 lines are picked up by the sensor
-        while (counter < 4) {
+       while (counter < 4) {
             lightValue = ls.getLightValue();
             LCD.drawInt(lightValue, 3, 7);
             if (!line && lightValue <= 50) {
@@ -69,6 +69,9 @@ public class LightLocalizer{
             }
             else if (lightValue > 50) line = false;
         }
+        
+        
+        
         // stop the robot
         robot.setSpeeds(0,0);
           
@@ -87,10 +90,10 @@ public class LightLocalizer{
         odo.setPosition(new double[] {x, y, 0}, new boolean[] {true, true, true});
           
         // go to the point (0, 0)
-        nav.travelTo(0,0);
+        nav.travelTo(3,0);
           
         // turn back to a heading of 0
-        nav.turnTo(0, true);
+        nav.turnTo(18, true);
           
         // update the odometer with the position and heading of the robot
         odo.setPosition(new double[] {0, 0, 0}, new boolean[] {true, true, true});
