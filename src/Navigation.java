@@ -17,8 +17,7 @@ public class Navigation {
     private final double wheelRadius = 2.1, width = 15.45;
     private Odometer odometer;
     private NXTRegulatedMotor leftMotor, rightMotor;
- 
-    private double deltaX, deltaY, theta, distance;
+
      
     public Navigation(Odometer odo) {
         this.odometer = odo;
@@ -31,6 +30,15 @@ public class Navigation {
         this.rightMotor.setAcceleration(ACCELERATION);
     }
  
+    private int convertDistance(double radius, double travelDis) {
+        return (int) ((180.0 * travelDis) / (Math.PI * radius));
+    }
+ 
+     
+    private int convertAngle(double radius, double width, double angle) {
+        return convertDistance(radius, Math.PI * width * angle / 360.0);
+    }
+    
     /*
      * Functions to set the motor speeds jointly
      */
@@ -75,30 +83,35 @@ public class Navigation {
      * constantly updating it's heading
      */
     public void travelTo(double x, double y) {
-         
-        // check how much the robot has to travel in the x and y direction
-        int counter = 0;
-        deltaX = x - odometer.getX();
-        deltaY = y - odometer.getY();
+        
+	double dX, dY, angle, travelDis;
+	int tries = 0;
+	
+        //Get the x y and that we need to travel
+        dX = x - odometer.getX();
+        dY = y - odometer.getY();
                  
-        // find the direction the robot must face in order to get to his destination
-        theta = Math.atan2(deltaX, deltaY) * 180 / Math.PI;
+        // find the direction by using tan
+        angle = Math.atan2(dX, dY) * 180 / Math.PI;
          
-        // keep correcting the angle
-        while (Math.abs(odometer.getAng() - theta) > DEG_ERR && counter < 10) {
-            turnTo(theta, true);
-            counter++;
+        // Correct the angle until its good
+        while (Math.abs(odometer.getAng() - angle) > DEG_ERR && tries < 10) {
+            tries = tries + 1;
+            turnTo(angle, true);
             Sound.beep();
         }
                  
-        // set the speed of the motors
+        //Make the wheels move slowly
         leftMotor.setSpeed(SLOW);
         rightMotor.setSpeed(SLOW);
                  
-        distance = Math.sqrt(Math.pow(deltaX,  2) + Math.pow(deltaY, 2));
+        //Calcuate the travel distance by using pythagorean
+        travelDis = Math.sqrt(dX*dX + dY*dY);
                  
-        Motor.A.rotate(convertDistance(wheelRadius, distance), true);
-        Motor.B.rotate(convertDistance(wheelRadius, distance), false);
+        //Move the robot a certain distance and then stop the motors
+        Motor.A.rotate(convertDistance(wheelRadius, travelDis), true);
+        Motor.B.rotate(convertDistance(wheelRadius, travelDis), false);
+        
         Motor.A.stop();
         Motor.B.stop();
     }
@@ -108,64 +121,54 @@ public class Navigation {
      * motors when the turn is completed
      */
     public void turnTo(double turnAngle, boolean stop) {        
-        // get the angle reported by the odometer
-        double odometerTheta = this.odometer.getAng();
+       
+        //Get the angle the robot needs to turn  
+        double angleNeedToTravel = (turnAngle - odometer.getAng())%360;  
             
-        double angleChange = (turnAngle - odometerTheta)%360;  
-            
-        // makes sure that angle is minimal
-        if ((angleChange > 180)||(angleChange < -180)) {
-            if (angleChange > 180) {
-                angleChange = angleChange - 360;
-            } else {
-                angleChange = angleChange + 360;
+        //Get the minimal angle
+        if ((angleNeedToTravel > 180)||(angleNeedToTravel < -180)) {
+            if (angleNeedToTravel > 180) {
+                angleNeedToTravel = angleNeedToTravel - 360;
+            } 
+            else {
+                angleNeedToTravel = angleNeedToTravel + 360;
             }
         }
         
         // if the  angle is not within the given error margin
-        if (Math.abs(angleChange) > DEG_ERR) {
+        if (Math.abs(angleNeedToTravel) > DEG_ERR) {
                 
-            // if angle change is positive
-            if (angleChange > 0){
-                    
-                // turn to the right
+            // if angle change is positive we move clockwise
+            if (angleNeedToTravel > 0){
+        	
                 Motor.A.setSpeed(SLOW);
                 Motor.B.setSpeed(SLOW);
                     
-                Motor.A.rotate(convertAngle(wheelRadius, width, Math.abs(angleChange)), true);
-                Motor.B.rotate(-convertAngle(wheelRadius, width, Math.abs(angleChange)), false);
+                Motor.A.rotate(convertAngle(wheelRadius, width, Math.abs(angleNeedToTravel)), true);
+                Motor.B.rotate(-convertAngle(wheelRadius, width, Math.abs(angleNeedToTravel)), false);
                  
-             // if angle change is negative
-            } else {
-                // turn to the left
-                Motor.A.setSpeed(SLOW);
+             // if angle is negative move counterclockwise
+            } 
+            else {
+        	
+            	Motor.A.setSpeed(SLOW);
                 Motor.B.setSpeed(SLOW);
                     
-                Motor.A.rotate(-convertAngle(wheelRadius, width, Math.abs(angleChange)), true);
-                Motor.B.rotate(convertAngle(wheelRadius, width, Math.abs(angleChange)), false);
+                Motor.A.rotate(-convertAngle(wheelRadius, width, Math.abs(angleNeedToTravel)), true);
+                Motor.B.rotate(convertAngle(wheelRadius, width, Math.abs(angleNeedToTravel)), false);
             }
         }
          
+        //Stop the motors after we turned the amount we desired
         Motor.B.stop();
         Motor.A.stop();
     }
      
-     
-    private int convertDistance(double radius, double distance) {
-        return (int) ((180.0 * distance) / (Math.PI * radius));
-    }
- 
-     
-    private int convertAngle(double radius, double width, double angle) {
-        return convertDistance(radius, Math.PI * width * angle / 360.0);
-    }
- 
-     
     /*
-     * Go foward a set distance in cm
+     * Go foward a set travelDis in cm
      */
-    public void goForward(double distance) {
-        this.travelTo(Math.cos(Math.toRadians(this.odometer.getAng())) * distance, Math.cos(Math.toRadians(this.odometer.getAng())) * distance);
+    public void goForward(double travelDis) {
+        this.travelTo(Math.cos(Math.toRadians(this.odometer.getAng())) * travelDis, Math.cos(Math.toRadians(this.odometer.getAng())) * travelDis);
  
     }
 }
